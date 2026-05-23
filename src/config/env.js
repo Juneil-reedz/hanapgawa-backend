@@ -31,6 +31,7 @@ const env = {
   livekitApiSecret: process.env.LIVEKIT_API_SECRET || '',
   geminiApiKey: process.env.GEMINI_API_KEY || '',
   groqApiKey: process.env.GROQ_API_KEY || '',
+  gatewayInternalSecret: process.env.GATEWAY_INTERNAL_SECRET || '',
 };
 
 module.exports = { env };

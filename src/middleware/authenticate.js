@@ -6,7 +6,7 @@ const { HttpError } = require('../lib/http-error');
 
 // Configure the JWKS client to fetch the public key from the Tawi-Tawi Gateway
 const client = jwksClient({
-  jwksUri: 'http://localhost:1738/.well-known/jwks.json',
+  jwksUri: env.gatewayJwksUrl,
   cache: true,
   rateLimit: true,
   jwksRequestsPerMinute: 5

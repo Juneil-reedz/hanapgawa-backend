@@ -48,10 +48,11 @@ function isAllowedOrigin(origin) {
   return false;
 }
 
-// General rate limit: 300 requests per 5 minutes per IP
+// General rate limit: 1000 requests per 5 minutes per IP
+// High because all users share the same proxy IP (tawi-tawi-backend)
 const generalLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
-  max: 300,
+  max: 1000,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: { error: { message: 'Too many requests, please slow down.' } },
@@ -86,7 +87,9 @@ app.get('/', (_req, res) => {
   });
 });
 
-app.use(`${env.apiPrefix}/auth`, authLimiter);
+// Strict limit only on login/register — not ssoInit (all users share proxy IP)
+app.use(`${env.apiPrefix}/auth/login`, authLimiter);
+app.use(`${env.apiPrefix}/auth/register`, authLimiter);
 app.use(env.apiPrefix, generalLimiter, apiRoutes);
 app.use(errorHandler);
 

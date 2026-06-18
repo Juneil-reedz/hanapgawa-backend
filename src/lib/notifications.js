@@ -1,4 +1,5 @@
 const { sendPushNotification } = require('./firebase');
+const { sendToUser } = require('./sse-broadcaster');
 
 async function _getDeviceTokens(pool, userId) {
   try {
@@ -20,6 +21,9 @@ async function createNotification(pool, { userId, actorId, actorName, type, titl
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
       [userId, actorId || null, actorName || '', type, title, body.slice(0, 200), linkType || null, linkId || null],
     );
+    // Push SSE event so connected clients update badge instantly
+    sendToUser(userId, 'notification', { type, title });
+
     // Send FCM push notification (fire-and-forget)
     _getDeviceTokens(pool, userId).then((tokens) => {
       for (const token of tokens) {
